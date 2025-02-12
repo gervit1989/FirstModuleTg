@@ -2,7 +2,7 @@ import asyncio
 import os
 from aiogram import Bot, Dispatcher
 
-from Handlers import all_h_router
+from Handlers import all_handlers_router
 
 def on_start():
     print("Bot is started...")
@@ -17,7 +17,7 @@ async def start_bot():
     dp.startup.register(on_start)
     dp.shutdown.register(on_shutdown)
     dp.include_routers(
-        all_h_router,
+        all_handlers_router,
     )
     await dp.start_polling(bot)
 

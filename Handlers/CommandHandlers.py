@@ -6,6 +6,8 @@ from Keyboard import keyboard_start
 
 command_router = Router()
 
+
+@command_router.message(F.text == 'Назад')
 @command_router.message(Command('start'))
 async def com_start(message: Message):
     await message.answer(
@@ -19,5 +21,5 @@ async def com_start(message: Message):
 @command_router.message(Command('help'))
 async def com_help(message: Message):
     await message.answer(
-        text=f'Привет,{message.from_user.full_name}'
+        text=f'Привет,{message.from_user.full_name}!'
     )

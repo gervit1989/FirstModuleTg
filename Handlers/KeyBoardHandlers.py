@@ -6,11 +6,10 @@ from Keyboard import keyboard_back, keyboard_start
 keyboard_router = Router()
 
 @keyboard_router.message(F.text == 'ChatGPT')
-@keyboard_router.message(F.text == 'Назад')
 async def keyboard_chat(message: Message):
     await message.answer(
         text=f'В будущем здесь GPT',
-        reply_markup=keyboard_start()
+        reply_markup=keyboard_back()
     )
 
 @keyboard_router.message(F.text == 'Выход')
