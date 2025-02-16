@@ -1,15 +1,16 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from Keyboard import keyboard_back, keyboard_start
+from Descriptions import *
+from keyboards.ReplyKeyboard import keyboard_by_arg, keyboard_btn_by_arg, keyboard_start
 
 keyboard_router = Router()
 
-@keyboard_router.message(F.text == 'ChatGPT')
+@keyboard_router.message(F.text == command_description['AICHAT'][0])
 async def keyboard_chat(message: Message):
     await message.answer(
-        text=f'В будущем здесь GPT',
-        reply_markup=keyboard_back()
+        text=f'В будущем здесь чат с ИИ',
+        reply_markup=keyboard_by_arg('AI_CHAT')
     )
 
 @keyboard_router.message(F.text == 'Выход')
