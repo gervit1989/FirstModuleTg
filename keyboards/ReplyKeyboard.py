@@ -9,7 +9,9 @@ def keyboard_start():
         if len(value)>2:
             keyboard.button(text=value[2],)
             btn_count+=1
-    keyboard.adjust([2]*btn_count/2)
+    btn_count = btn_count//2
+    print(btn_count)
+    keyboard.adjust(*[2]*btn_count)
     return keyboard.as_markup(resize_keyboard=True,)
 
 def keyboard_btn_by_arg(arg: str):
