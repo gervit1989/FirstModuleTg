@@ -3,16 +3,16 @@ from aiogram.types import FSInputFile
 
 command_description= {'START': ('start','Нажмите для запуска бота'),
                       'HELP': ('help', 'Нажмите для просмотра доступных команд'),
-                      'FACT': ('random', 'Рандомный факт','1','FACT_NEW','BACK'),
-                      'AICHAT': ('gpt', 'ChatGPT интерфейс','2','BACK'),
-                      'TALK': ('talk', 'Диалог с известной личностью','3','BACK'),
-                      'QUIZ': ('quiz', 'Квиз','4','BACK'),
-                      'TRANSLATION': ('translate', 'Переводчик','5.1','BACK'),
-                      'VOICE_CHAT': ('voice', 'Голосовое общение','5.2','BACK'),
-                      'RECOMMEND': ('recommend', 'Рекомендации по фильмам и книгам','5.3','BACK'),
-                      'TRAIN': ('train', 'Словарный тренажёр','5.4','BACK'),
-                      'IMAGE': ('image', 'Распознавание изображений','5.5','BACK'),
-                      'SUMMARY': ('summary', 'Помощь с резюме','5.6','BACK')}
+                      'FACT': ('random', 'Рандомный факт','-','FACT_NEW','BACK'),
+                      'AICHAT': ('gpt', 'ChatGPT интерфейс','-','BACK'),
+                      'TALK': ('talk', 'Диалог с известной личностью','-','BACK'),
+                      'QUIZ': ('quiz', 'Квиз','-','BACK'),
+                      'TRANSLATION': ('translate', 'Переводчик','-','BACK'),
+                      'VOICE_CHAT': ('voice', 'Голосовое общение','-','BACK'),
+                      'RECOMMEND': ('recommend', 'Рекомендации по фильмам и книгам','-','BACK'),
+                      'TRAIN': ('train', 'Словарный тренажёр','-','BACK'),
+                      'IMAGE': ('image', 'Распознавание изображений','-','BACK'),
+                      'SUMMARY': ('summary', 'Помощь с резюме','-','BACK')}
 
 text_descriptions = {'BACK': ('Закончить'), 'FACT_NEW':('Хочу ещё факт')}
 resource_list = {}

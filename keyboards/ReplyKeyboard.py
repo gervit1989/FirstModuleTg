@@ -7,7 +7,10 @@ def keyboard_start():
     btn_count = 0
     for key, value in command_description.items():
         if len(value)>2:
-            keyboard.button(text=value[2],)
+            btn_txt = value[2]
+            if value[2] == '-':
+                btn_txt = value[1]
+            keyboard.button(text=btn_txt,)
             btn_count+=1
     btn_count = btn_count//2
     print(btn_count)
