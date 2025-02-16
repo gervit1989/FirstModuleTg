@@ -38,7 +38,7 @@ def init_resources():
     files_list['prompts'] = [file for file in os.listdir('resources/prompts')]
     files_list['images'] = [file for file in os.listdir('resources/images')]
     files_list['messages'] = [file for file in os.listdir('resources/messages')]
-    print(*files_list.items(), sep='\n')
+    #print(*files_list.items(), sep='\n')
     len_max = 0
     max_len_arr_key = ''
     for key, arr in files_list.items():
@@ -47,14 +47,14 @@ def init_resources():
             max_len_arr_key = key
             len_max = arr_len
     res_list = {}
-    print(max_len_arr_key)
+    #print(max_len_arr_key)
     another_keys = []
     for key in files_list.keys():
         if key == max_len_arr_key:
             continue
         another_keys.append(key)
     for file_name in files_list[max_len_arr_key]:
-        print(file_name)
+        #print(file_name)
         file_without_ext = os.path.splitext(os.path.basename(file_name))[0]
         prompt = None
         msg = None
@@ -67,12 +67,12 @@ def init_resources():
             prompt = in_data if 'prompts' == max_len_arr_key else None
             msg = in_data if 'messages' == max_len_arr_key else None
         for key2 in another_keys:
-            print(key2)
+            #print(key2)
             for file_name2 in files_list[key2]:
                 file_without_ext2 = os.path.splitext(os.path.basename(file_name2))[0]
-                print(file_without_ext2, file_without_ext)
+                #print(file_without_ext2, file_without_ext)
                 if file_without_ext2 == file_without_ext:
-                    print(file_without_ext)
+                    #print(file_without_ext)
                     if key2 == 'images':
                         photo = FSInputFile(path=os.path.join(f'resources/{key2}', file_name2))
                     else:
@@ -81,13 +81,13 @@ def init_resources():
                             in_data = fin.readlines()
                         prompt = in_data if 'prompts' == key2 else None
                         msg = in_data if 'messages' == key2 else None
-        print('combine')
+        #print('combine')
         if file_name.startswith('talk_'):
             name_right = prompt[0].split(',')[0][5:]
-            print('name', name_right)
+            #print('name', name_right)
             res_list[file_without_ext] = CelebrityResource(name_right, photo, prompt, msg)
         else:
             res_list[file_without_ext] = Resource(file_without_ext, photo, prompt, msg)
-        print(*res_list.items(), sep='\n')
+        #print(*res_list.items(), sep='\n')
         global resource_list
         resource_list = res_list
