@@ -1,6 +1,5 @@
 import os
 import httpx
-from aiohttp import request
 from openai import AsyncOpenAI
 
 from enum import Enum
@@ -38,11 +37,11 @@ class AI:
         return ai_client
 
     # получить промпт
-    async def _read_prompt(path: str) -> str:
-        item = res_holder.get_resource(path)
+    async def _read_prompt(self, path: str) -> str:
+        item = await res_holder.get_resource(path)
 
         if item is not None:
-            prompt = await item.prompt
+            prompt = item.prompt
         return prompt
 
     # текстовый запрос

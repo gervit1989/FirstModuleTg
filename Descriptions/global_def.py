@@ -23,6 +23,7 @@ class Resource:
     name_of_res = None
     def __init__(self, name, photo_, prompt_ = None,msg_ =None):
         self.photo = photo_
+        #print("class:", name, prompt_, msg_)
         self.prompt = prompt_
         self.msg = msg_
         self.name_of_res = name
@@ -82,24 +83,27 @@ class ResHolder:
             else:
                 in_data = None
                 with open(f'resources/{max_len_arr_key}/{file_name}', "r", encoding='UTF-8') as fin:
-                    in_data = fin.readlines()
-                prompt = in_data if 'prompts' == max_len_arr_key else None
-                msg = in_data if 'messages' == max_len_arr_key else None
+                    in_data = fin.read()
+                prompt = in_data if 'prompts' == max_len_arr_key else prompt
+                msg = in_data if 'messages' == max_len_arr_key else msg
             for key2 in another_keys:
-                #print(key2)
+                #print('\t',key2)
                 for file_name2 in files_list[key2]:
                     file_without_ext2 = os.path.splitext(os.path.basename(file_name2))[0]
-                    #print(file_without_ext2, file_without_ext)
+                    #print('\t','\t',file_without_ext2, file_name2, key2)
                     if file_without_ext2 == file_without_ext:
-                        #print(file_without_ext)
+                        #print('\t','\t','\t',file_without_ext)
                         if key2 == 'images':
                             photo = FSInputFile(path=os.path.join(f'resources/{key2}', file_name2))
                         else:
                             in_data = None
                             with open(f'resources/{key2}/{file_name2}', "r", encoding='UTF-8') as fin:
-                                in_data = fin.readlines()
-                            prompt = in_data if 'prompts' == key2 else None
-                            msg = in_data if 'messages' == key2 else None
+                                in_data = fin.read()
+                            #print('\t','\t','\t',"file:", in_data)
+                            prompt = in_data if 'prompts' == key2 else prompt
+                            #print(prompt)
+                            msg = in_data if 'messages' == key2 else msg
+                        break
             #print('combine')
             if file_name.startswith('talk_'):
                 name_right = prompt[0].split(',')[0][5:]

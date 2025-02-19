@@ -3,10 +3,8 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.enums import ChatAction
 from keyboards import *
-from Definitions import *
+from Definitions import ai_client
 from Descriptions import res_holder, text_descriptions, command_description
-import asyncio
-
 ai_handler = Router()
 
 @ai_handler.message(F.text == text_descriptions['FACT_NEW'])
@@ -23,7 +21,7 @@ async def ai_random_fact(message: Message):
     print('xfind...')
     item = await res_holder.get_resource(command_description['FACT'][0])
     if item is not None:
-        print(item.name_of_res)
+        print(item.name_of_res, item.prompt)
         caption =  item.prompt
         photo_file = item.photo
         req_msg = item.msg
@@ -35,6 +33,7 @@ async def ai_random_fact(message: Message):
             'content': req_msg,
         }
     ]
+    caption = await ai_client.text_request(request_message, command_description['FACT'][0])
     await message.answer_photo(
         photo=photo_file,
         caption=caption,
