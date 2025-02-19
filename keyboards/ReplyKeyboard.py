@@ -13,7 +13,7 @@ def keyboard_start():
             keyboard.button(text=btn_txt,)
             btn_count+=1
     btn_count = btn_count//2
-    print(btn_count)
+    #print('btns count:',btn_count)
     keyboard.adjust(*[2]*btn_count)
     return keyboard.as_markup(resize_keyboard=True,)
 

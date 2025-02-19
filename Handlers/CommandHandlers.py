@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.filters import Command
 
 from Descriptions import *
-from keyboards.ReplyKeyboard import keyboard_start
+from keyboards import *
 
 command_router = Router()
 

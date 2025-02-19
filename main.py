@@ -1,6 +1,5 @@
 import asyncio  # асинхронка
 import os       # файловая система
-from importlib.metadata import files
 
 from aiogram import Bot, Dispatcher     # работа с тг
 from aiogram.types import BotCommand, BotCommandScopeDefault  # команды меню
