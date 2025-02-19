@@ -3,7 +3,6 @@ from aiogram.types import CallbackQuery, FSInputFile
 import os
 from keyboards import ikb_celebrity
 
-
 callback_router = Router()
 
 @callback_router.callback_query(F.data.startswith('talk_'))

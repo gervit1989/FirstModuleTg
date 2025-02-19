@@ -7,30 +7,6 @@ from keyboards.ReplyKeyboard import keyboard_by_arg, keyboard_btn_by_arg, keyboa
 
 keyboard_router = Router()
 
-@keyboard_router.message(Command(command_description['AICHAT'][0]))
-@keyboard_router.message(F.text == command_description['AICHAT'][1])
-async def keyboard_chat(message: Message):
-    await message.answer(
-        text=f'В будущем здесь чат с ИИ',
-        reply_markup=keyboard_by_arg('AI_CHAT')
-    )
-
-@keyboard_router.message(Command(command_description['FACT'][0]))
-@keyboard_router.message(F.text == command_description['FACT'][1])
-async def keyboard_chat(message: Message):
-    await message.answer(
-        text=f'В будущем здесь чат с ИИ-FACT',
-        reply_markup=keyboard_by_arg('FACT')
-    )
-
-@keyboard_router.message(Command(command_description['QUIZ'][0]))
-@keyboard_router.message(F.text == command_description['QUIZ'][1])
-async def keyboard_chat(message: Message):
-    await message.answer(
-        text=f'В будущем здесь чат с ИИ -QUIZ',
-        reply_markup=keyboard_by_arg('QUIZ')
-    )
-
 @keyboard_router.message(F.text == 'Выход')
 async def keyboard_chat(message: Message):
     await message.answer(
