@@ -1,10 +1,11 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.enums import ChatAction
 from keyboards import *
 from Definitions import *
-from Descriptions import *
+from Descriptions import res_holder, text_descriptions, command_description
+import asyncio
 
 ai_handler = Router()
 
@@ -20,17 +21,14 @@ async def ai_random_fact(message: Message):
     photo_file = None
     req_msg = ''
     print('xfind...')
-    res_lst = await resource_list
-    if command_description['FACT'][0] in resource_list.keys():
-        item = resource_list[command_description['FACT'][0]]
-        print(item.name)
-
-        print('found')
-        caption = item.prompt
+    item = await res_holder.get_resource(command_description['FACT'][0])
+    if item is not None:
+        print(item.name_of_res)
+        caption =  item.prompt
         photo_file = item.photo
         req_msg = item.msg
+        print('found', req_msg, photo_file, caption)
     print('x')
-
     request_message = [
         {
             'role': 'user',

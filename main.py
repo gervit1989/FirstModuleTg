@@ -36,8 +36,6 @@ async def set_commands(bot: Bot):
 
 if __name__ =='__main__':
     try:
-        # собираем ресурсы
-        init_resources()
         # запуск бота
         asyncio.run(start_bot())
     # пропускаем перезапуск бота - не ошибка

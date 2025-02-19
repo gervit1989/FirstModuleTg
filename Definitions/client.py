@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 
 from enum import Enum
 
-from Descriptions import resource_list
+from Descriptions import res_holder
 
 
 class Model(Enum):
@@ -39,11 +39,10 @@ class AI:
 
     # получить промпт
     async def _read_prompt(path: str) -> str:
+        item = res_holder.get_resource(path)
 
-        res_lst = await resource_list
-        for item in res_lst:
-            if item.name == path:
-                prompt = await item.prompt
+        if item is not None:
+            prompt = await item.prompt
         return prompt
 
     # текстовый запрос
