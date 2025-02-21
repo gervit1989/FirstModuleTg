@@ -35,29 +35,28 @@ async def ai_random_fact(message: Message):
             'content': req_msg,
         }
     ]
-    try:
-        caption = await ai_client.text_request(request_message, command_description['FACT'][0])
-        await message.answer_photo(
-            photo=photo_file,
-            caption=caption,
-            reply_markup=keyboard_btn_by_arg('FACT'),
-        )
-    except RateLimitError as e:
-        print('try next token. this not done with: ',e)
+    data = []
+    data.append((os.getenv('AI_TOKEN2'),))
+    data.append((os.getenv('AI_TOKEN3'),os.getenv('PROXY2'),))
+    for i in range(len(data)+1):
         try:
-            ai_client.reconnect(os.getenv('AI_TOKEN2'))
-            print('1')
             caption = await ai_client.text_request(request_message, command_description['FACT'][0])
-            print('2')
             await message.answer_photo(
                 photo=photo_file,
                 caption=caption,
                 reply_markup=keyboard_btn_by_arg('FACT'),
             )
         except RateLimitError as e:
-            print('we need new token and proxy by error:', e)
-    finally:
-        print('done')
+            if i < len(data):
+                print('try next token. this not done with: ',e)
+                item = data[i]
+                if len(item) < 2:
+                    ai_client.reconnect(item[0])
+                else:
+                    ai_client.reconnect(item[0], item[1])
+        else:
+            break
+    print('done')
 
 @ai_handler.message(Command(command_description['AICHAT'][0]))
 @ai_handler.message(F.text == command_description['AICHAT'][1])

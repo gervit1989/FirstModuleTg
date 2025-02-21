@@ -29,12 +29,18 @@ class AI:
     # создание клиента
     def _create_client(self):
         print('creating client')
-        ai_client = AsyncOpenAI(
-            api_key=self._ai_token,
-            http_client=httpx.AsyncClient(
-                proxy=self._proxy,
+        if self._proxy == os.getenv('PROXY'):
+            ai_client = AsyncOpenAI(
+                api_key=self._ai_token,
+                http_client=httpx.AsyncClient(
+                    proxy=self._proxy,
+                )
             )
-        )
+        else:
+            ai_client = AsyncOpenAI(
+                api_key=self._ai_token,
+                base_url=self._proxy
+            )
         return ai_client
 
     def reconnect(self, token, proxy = None):
