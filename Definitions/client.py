@@ -28,6 +28,7 @@ class AI:
 
     # создание клиента
     def _create_client(self):
+        print('creating client')
         ai_client = AsyncOpenAI(
             api_key=self._ai_token,
             http_client=httpx.AsyncClient(
@@ -36,10 +37,15 @@ class AI:
         )
         return ai_client
 
+    def reconnect(self, token, proxy = None):
+        if proxy is not None:
+            self._proxy = proxy
+        self._ai_token = token
+        self._client = self._create_client()
+
     # получить промпт
     async def _read_prompt(self, path: str) -> str:
         item = await res_holder.get_resource(path)
-
         if item is not None:
             prompt = item.prompt
         return prompt

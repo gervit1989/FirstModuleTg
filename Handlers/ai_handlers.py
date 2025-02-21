@@ -1,7 +1,11 @@
+import os
+
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.enums import ChatAction
+from openai import RateLimitError
+
 from keyboards import *
 from Definitions import ai_client
 from Descriptions import res_holder, text_descriptions, command_description
@@ -18,27 +22,42 @@ async def ai_random_fact(message: Message):
     caption = None
     photo_file = None
     req_msg = ''
-    print('xfind...')
     item = await res_holder.get_resource(command_description['FACT'][0])
     if item is not None:
-        print(item.name_of_res, item.prompt)
+        #print(item.name_of_res, item.prompt)
         caption =  item.prompt
         photo_file = item.photo
         req_msg = item.msg
-        print('found', req_msg, photo_file, caption)
-    print('x')
+        #print('found', req_msg, photo_file, caption)
     request_message = [
         {
             'role': 'user',
             'content': req_msg,
         }
     ]
-    caption = await ai_client.text_request(request_message, command_description['FACT'][0])
-    await message.answer_photo(
-        photo=photo_file,
-        caption=caption,
-        reply_markup=keyboard_btn_by_arg('FACT'),
-    )
+    try:
+        caption = await ai_client.text_request(request_message, command_description['FACT'][0])
+        await message.answer_photo(
+            photo=photo_file,
+            caption=caption,
+            reply_markup=keyboard_btn_by_arg('FACT'),
+        )
+    except RateLimitError as e:
+        print('try next token. this not done with: ',e)
+        try:
+            ai_client.reconnect(os.getenv('AI_TOKEN2'))
+            print('1')
+            caption = await ai_client.text_request(request_message, command_description['FACT'][0])
+            print('2')
+            await message.answer_photo(
+                photo=photo_file,
+                caption=caption,
+                reply_markup=keyboard_btn_by_arg('FACT'),
+            )
+        except RateLimitError as e:
+            print('we need new token and proxy by error:', e)
+    finally:
+        print('done')
 
 @ai_handler.message(Command(command_description['AICHAT'][0]))
 @ai_handler.message(F.text == command_description['AICHAT'][1])
