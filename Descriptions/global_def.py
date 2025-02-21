@@ -14,7 +14,7 @@ command_description= {'START': ('start','Нажмите для запуска б
                       'IMAGE': ('image', 'Распознавание изображений','-','BACK'),
                       'SUMMARY': ('summary', 'Помощь с резюме','-','BACK')}
 
-text_descriptions = {'BACK': ('Закончить'), 'FACT_NEW':('Хочу ещё факт')}
+text_descriptions = {'FACT_NEW':('Хочу ещё факт',), 'BACK': ('Закончить',)}
 
 class Resource:
     photo = None

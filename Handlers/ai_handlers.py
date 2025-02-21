@@ -11,7 +11,7 @@ from Definitions import ai_client
 from Descriptions import res_holder, text_descriptions, command_description
 ai_handler = Router()
 
-@ai_handler.message(F.text == text_descriptions['FACT_NEW'])
+@ai_handler.message(F.text == text_descriptions['FACT_NEW'][0])
 @ai_handler.message(Command(command_description['FACT'][0]))
 @ai_handler.message(F.text == command_description['FACT'][1])
 async def ai_random_fact(message: Message):
@@ -38,13 +38,14 @@ async def ai_random_fact(message: Message):
     data = []
     data.append((os.getenv('AI_TOKEN2'),))
     data.append((os.getenv('AI_TOKEN3'),os.getenv('PROXY2'),))
-    for i in range(len(data)+1):
+    data.append((os.getenv('AI_TOKEN'),os.getenv('PROXY'),))
+    for i in range(len(data)):
         try:
             caption = await ai_client.text_request(request_message, command_description['FACT'][0])
             await message.answer_photo(
                 photo=photo_file,
                 caption=caption,
-                reply_markup=keyboard_btn_by_arg('FACT'),
+                reply_markup=keyboard_by_arg('FACT'),
             )
         except RateLimitError as e:
             if i < len(data):
@@ -54,8 +55,14 @@ async def ai_random_fact(message: Message):
                     ai_client.reconnect(item[0])
                 else:
                     ai_client.reconnect(item[0], item[1])
+                await message.bot.send_chat_action(
+                    chat_id=message.from_user.id,
+                    action=ChatAction.TYPING,
+                )
         else:
-            break
+            # переключаемся обратно на первый, чтобы с нас меньше брали
+            item = data[i]
+            ai_client.reconnect(item[0], item[1])
     print('done')
 
 @ai_handler.message(Command(command_description['AICHAT'][0]))
