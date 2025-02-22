@@ -4,9 +4,9 @@ import os       # файловая система
 from aiogram import Bot, Dispatcher     # работа с тг
 from aiogram.types import BotCommand, BotCommandScopeDefault  # команды меню
 
-from Handlers import *
-from Definitions import *
+from Handlers import all_handlers_router
 from Descriptions import *
+from AI import *
 
 # старт
 def on_start():
@@ -28,12 +28,14 @@ async def start_bot():
     await set_commands(bot)
     await dp.start_polling(bot)
 
+# установка команд
 async def set_commands(bot: Bot):
     commands=[]
     for item, value in command_description.items():
         commands.append(BotCommand(command=value[0], description=value[1]))
     await bot.set_my_commands(commands, BotCommandScopeDefault())
 
+# запуск тг бота
 if __name__ =='__main__':
     try:
         # запуск бота

@@ -27,12 +27,18 @@ def keyboard_btn_by_arg(arg: str):
 
 def keyboard_by_arg(arg: str):
     keyboard = ReplyKeyboardBuilder()
+    #print('arg:', arg)
+    btn_count = 0
     for key, value in command_description.items():
+        #print('key:', key)
         if key == arg:
+            #print('arg:', arg, len(value))
             if len(value)>3:
                 for i in range(3, len(value)):
                     for key2, value2 in text_descriptions.items():
                         if key2 is value[i]:
                             keyboard.button(text=value2[0],)
-    keyboard.adjust(2,1)
+                            btn_count += 1
+    btn_count = btn_count//2
+    keyboard.adjust(*[2]*btn_count)
     return keyboard.as_markup(resize_keyboard=True,)
