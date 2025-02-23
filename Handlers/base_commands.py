@@ -69,5 +69,10 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
                 action=ChatAction.TYPING,
             )
         else:
+            item = ai_client_connect_data[-1]
+            if len(item) < 2:
+                ai_client.reconnect(item[0])
+            else:
+                ai_client.reconnect(item[0], item[1])
             break
     print('done', arg_of_keyboard)
