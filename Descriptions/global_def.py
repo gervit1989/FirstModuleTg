@@ -1,6 +1,7 @@
 import os
 from aiogram.types import FSInputFile
 
+# описание команд и допов
 command_description= {'START': ('start','Нажмите для запуска бота'),
                       'HELP': ('help', 'Нажмите для просмотра доступных команд'),
                       'FACT': ('random', 'Рандомный факт','-','FACT_NEW','BACK'),
@@ -13,9 +14,10 @@ command_description= {'START': ('start','Нажмите для запуска б
                       'TRAIN': ('train', 'Словарный тренажёр','-','BACK'),
                       'IMAGE': ('image', 'Распознавание изображений','-','BACK'),
                       'SUMMARY': ('summary', 'Помощь с резюме','-','BACK')}
-
+# кнопки описание
 text_descriptions = {'FACT_NEW':('Хочу ещё факт',), 'BACK': ('Закончить',)}
 
+# класс ресурс
 class Resource:
     photo = None
     prompt = None
@@ -28,12 +30,14 @@ class Resource:
         self.msg = msg_
         self.name_of_res = name
 
+# ресурс знаменитости
 class CelebrityResource(Resource):
     celebrity_name = None
     def __init__(self, name, photo_, prompt_ = None,msg_ =None):
         super().__init__(name, photo_, prompt_, msg_)
         self.celebrity_name = name
 
+# хранилище ресурсов
 class ResHolder:
     resource_list = []
 
@@ -41,12 +45,22 @@ class ResHolder:
         self.resource_list = []
         self.init_resources()
 
+    # дай мне ресурс команды
     async def get_resource(self, _name):
         for item in self.resource_list:
             if item.name_of_res == _name:
                 return item
         return None
 
+    # список имен звезд
+    async def get_celebrity_names(self):
+        names_lst =[]
+        for item in self.resource_list:
+            if isinstance(item, CelebrityResource):
+                names_lst.append(item.celebrity_name)
+        return names_lst
+
+    # по имени отдай ресурс звезды
     async def get_celebrity_resource(self, _name):
         for item in self.resource_list:
             if isinstance(item, CelebrityResource):
@@ -54,12 +68,14 @@ class ResHolder:
                     return item
         return None
 
+    # инициализация ресурса
     def init_resources(self):
+        print('init resources...')
         files_list = {}
-        files_list['prompts'] = [file for file in os.listdir('resources/prompts')]
-        files_list['images'] = [file for file in os.listdir('resources/images')]
-        files_list['messages'] = [file for file in os.listdir('resources/messages')]
-        #print(*files_list.items(), sep='\n')
+        res_dir_name = 'resources'
+        dir_lst = os.listdir(res_dir_name)
+        for dir_var in dir_lst:
+            files_list[dir_var] = [file for file in os.listdir(f'{res_dir_name}/{dir_var}')]
         len_max = 0
         max_len_arr_key = ''
         for key, arr in files_list.items():
@@ -79,10 +95,10 @@ class ResHolder:
             prompt = None
             msg = None
             if max_len_arr_key == 'images':
-                photo = FSInputFile(path=os.path.join(f'resources/{max_len_arr_key}', file_name))
+                photo = FSInputFile(path=os.path.join(f'{res_dir_name}/{max_len_arr_key}', file_name))
             else:
                 in_data = None
-                with open(f'resources/{max_len_arr_key}/{file_name}', "r", encoding='UTF-8') as fin:
+                with open(f'{res_dir_name}/{max_len_arr_key}/{file_name}', "r", encoding='UTF-8') as fin:
                     in_data = fin.read()
                 prompt = in_data if 'prompts' == max_len_arr_key else prompt
                 msg = in_data if 'messages' == max_len_arr_key else msg
@@ -94,10 +110,10 @@ class ResHolder:
                     if file_without_ext2 == file_without_ext:
                         #print('\t','\t','\t',file_without_ext)
                         if key2 == 'images':
-                            photo = FSInputFile(path=os.path.join(f'resources/{key2}', file_name2))
+                            photo = FSInputFile(path=os.path.join(f'{res_dir_name}/{key2}', file_name2))
                         else:
                             in_data = None
-                            with open(f'resources/{key2}/{file_name2}', "r", encoding='UTF-8') as fin:
+                            with open(f'{res_dir_name}/{key2}/{file_name2}', "r", encoding='UTF-8') as fin:
                                 in_data = fin.read()
                             #print('\t','\t','\t',"file:", in_data)
                             prompt = in_data if 'prompts' == key2 else prompt

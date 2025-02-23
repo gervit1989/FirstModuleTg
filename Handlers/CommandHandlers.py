@@ -26,7 +26,7 @@ async def command_start(message: Message):
             text=f'Привет,{message.from_user.full_name}',
             reply_markup=keyboard_start(),
         )
-
+# - /gpt
 @command_router.message(Command(command_description['AICHAT'][0]))
 @command_router.message(F.text == command_description['AICHAT'][1])
 async def command_gpt(message: Message, state: FSMContext):
@@ -35,6 +35,14 @@ async def command_gpt(message: Message, state: FSMContext):
 
     # сохраняем положение
     await state.set_state(ChatStates.wait_for_request)
+
+# - /talk
+@command_router.message(Command(command_description['TALK'][0]))
+@command_router.message(F.text == command_description['TALK'][1])
+async def command_gpt(message: Message, state: FSMContext):
+    # поздороваться
+    await base_command(message, command_description['TALK'][0], 'TALK', None, False)
+
 
 @command_router.message(Command(command_description['HELP'][0]))
 async def command_help(message: Message):

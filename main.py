@@ -2,6 +2,7 @@ import asyncio  # асинхронка
 import os       # файловая система
 
 from aiogram import Bot, Dispatcher     # работа с тг
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import BotCommand, BotCommandScopeDefault  # команды меню
 
 from Handlers import all_handlers_router
@@ -31,8 +32,16 @@ async def start_bot():
 # установка команд
 async def set_commands(bot: Bot):
     commands=[]
+    print('setting commands')
     for item, value in command_description.items():
         commands.append(BotCommand(command=value[0], description=value[1]))
+    photo_file = None
+    item = await res_holder.get_resource('gpt')
+    try:
+        if item is not None:
+            await bot.set_chat_photo(photo=item.photo, chat_id=os.getenv('CHATID'))
+    except TelegramBadRequest:
+        print('I can not change photo yet')
     await bot.set_my_commands(commands, BotCommandScopeDefault())
 
 # запуск тг бота
