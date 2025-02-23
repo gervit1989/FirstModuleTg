@@ -4,7 +4,8 @@ from openai import RateLimitError
 from AI import ai_client
 from Descriptions import res_holder
 import os
-from keyboards import keyboard_by_arg
+from keyboards import keyboard_by_arg, ikb_celebrity
+
 
 # базовая команда ИИ
 async def base_command(message: Message, cmd_description: str, arg_of_keyboard: str, request:str = None, get_from_ai:bool = True):
@@ -40,6 +41,7 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
     ai_client_connect_data.append((os.getenv('AI_TOKEN3'),os.getenv('PROXY2'),))
     ai_client_connect_data.append((os.getenv('AI_TOKEN'),os.getenv('PROXY'),))
 
+    print(arg_of_keyboard)
     # попытка выполнить команду
     for i in range(len(ai_client_connect_data)):
         try:

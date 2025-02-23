@@ -44,6 +44,7 @@ async def command_gpt(message: Message, state: FSMContext):
     await base_command(message, command_description['TALK'][0], 'TALK', None, False)
 
 
+
 @command_router.message(Command(command_description['HELP'][0]))
 async def command_help(message: Message):
     await message.answer(

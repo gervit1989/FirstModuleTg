@@ -1,6 +1,7 @@
 
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from Descriptions import *
+from .InlineKeyboard import ikb_celebrity
 
 def keyboard_start():
     keyboard = ReplyKeyboardBuilder()
@@ -26,6 +27,8 @@ def keyboard_btn_by_arg(arg: str):
     return keyboard.as_markup(resize_keyboard=True,)
 
 def keyboard_by_arg(arg: str):
+    if arg == 'TALK':
+        return ikb_celebrity()
     keyboard = ReplyKeyboardBuilder()
     #print('arg:', arg)
     btn_count = 0

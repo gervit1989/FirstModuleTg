@@ -33,8 +33,8 @@ class Resource:
 # ресурс знаменитости
 class CelebrityResource(Resource):
     celebrity_name = None
-    def __init__(self, name, photo_, prompt_ = None,msg_ =None):
-        super().__init__(name, photo_, prompt_, msg_)
+    def __init__(self, name_of_res, name, photo_, prompt_ = None,msg_ =None):
+        super().__init__(name_of_res, photo_, prompt_, msg_)
         self.celebrity_name = name
 
 # хранилище ресурсов
@@ -53,7 +53,7 @@ class ResHolder:
         return None
 
     # список имен звезд
-    async def get_celebrity_names(self):
+    def get_celebrity_names(self):
         names_lst =[]
         for item in self.resource_list:
             if isinstance(item, CelebrityResource):
@@ -73,6 +73,9 @@ class ResHolder:
         print('init resources...')
         files_list = {}
         res_dir_name = 'resources'
+        img_key='images'
+        prompt_key='prompts'
+        msg_key ='messages'
         dir_lst = os.listdir(res_dir_name)
         for dir_var in dir_lst:
             files_list[dir_var] = [file for file in os.listdir(f'{res_dir_name}/{dir_var}')]
@@ -94,14 +97,14 @@ class ResHolder:
             file_without_ext = os.path.splitext(os.path.basename(file_name))[0]
             prompt = None
             msg = None
-            if max_len_arr_key == 'images':
+            if max_len_arr_key == img_key:
                 photo = FSInputFile(path=os.path.join(f'{res_dir_name}/{max_len_arr_key}', file_name))
             else:
                 in_data = None
                 with open(f'{res_dir_name}/{max_len_arr_key}/{file_name}', "r", encoding='UTF-8') as fin:
                     in_data = fin.read()
-                prompt = in_data if 'prompts' == max_len_arr_key else prompt
-                msg = in_data if 'messages' == max_len_arr_key else msg
+                prompt = in_data if prompt_key == max_len_arr_key else prompt
+                msg = in_data if msg_key == max_len_arr_key else msg
             for key2 in another_keys:
                 #print('\t',key2)
                 for file_name2 in files_list[key2]:
@@ -109,22 +112,20 @@ class ResHolder:
                     #print('\t','\t',file_without_ext2, file_name2, key2)
                     if file_without_ext2 == file_without_ext:
                         #print('\t','\t','\t',file_without_ext)
-                        if key2 == 'images':
+                        if key2 == img_key:
                             photo = FSInputFile(path=os.path.join(f'{res_dir_name}/{key2}', file_name2))
                         else:
                             in_data = None
                             with open(f'{res_dir_name}/{key2}/{file_name2}', "r", encoding='UTF-8') as fin:
                                 in_data = fin.read()
                             #print('\t','\t','\t',"file:", in_data)
-                            prompt = in_data if 'prompts' == key2 else prompt
+                            prompt = in_data if prompt_key == key2 else prompt
                             #print(prompt)
-                            msg = in_data if 'messages' == key2 else msg
+                            msg = in_data if msg_key == key2 else msg
                         break
-            #print('combine')
-            if file_name.startswith('talk_'):
-                name_right = prompt[0].split(',')[0][5:]
-                #print('name', name_right)
-                self.resource_list.append( CelebrityResource(name_right, photo, prompt, msg))
+            celebrity_start_str=command_description['TALK'][0].lower()+'_'
+            if file_name.startswith(celebrity_start_str):
+                name_right = prompt.split(',')[0][5:]
+                self.resource_list.append( CelebrityResource(file_without_ext, name_right, photo, prompt, msg))
             else:
                 self.resource_list.append( Resource(file_without_ext, photo, prompt, msg))
-            #print(*res_list.items(), sep='\n')

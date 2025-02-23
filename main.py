@@ -2,7 +2,7 @@ import asyncio  # асинхронка
 import os       # файловая система
 
 from aiogram import Bot, Dispatcher     # работа с тг
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramNetworkError
 from aiogram.types import BotCommand, BotCommandScopeDefault  # команды меню
 
 from Handlers import all_handlers_router
@@ -51,4 +51,8 @@ if __name__ =='__main__':
         asyncio.run(start_bot())
     # пропускаем перезапуск бота - не ошибка
     except KeyboardInterrupt:
+        print('KeyboardInterrupt')
+        pass
+    except TelegramNetworkError:
+        print('TelegramNetworkError')
         pass
