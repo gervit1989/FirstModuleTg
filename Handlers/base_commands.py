@@ -40,7 +40,6 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
     ai_client_connect_data.append((os.getenv('AI_TOKEN3'),os.getenv('PROXY2'),))
     ai_client_connect_data.append((os.getenv('AI_TOKEN'),os.getenv('PROXY'),))
 
-    print('x', arg_of_keyboard)
     # попытка выполнить команду
     for i in range(len(ai_client_connect_data)):
         try:
@@ -50,7 +49,6 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
             else:
                 caption = req_msg
             # послать фото с подписью
-            print('i', i, arg_of_keyboard)
             await message.answer_photo(
                 photo=photo_file,
                 caption=caption,
