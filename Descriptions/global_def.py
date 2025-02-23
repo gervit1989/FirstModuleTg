@@ -6,7 +6,7 @@ command_description= {'START': ('start','Нажмите для запуска б
                       'HELP': ('help', 'Нажмите для просмотра доступных команд'),
                       'FACT': ('random', 'Рандомный факт','-','FACT_NEW','BACK'),
                       'AICHAT': ('gpt', 'ChatGPT интерфейс','-','BACK'),
-                      'TALK': ('talk', 'Диалог с известной личностью','-','BACK'),
+                      'TALK': ('talk', 'Диалог с известной личностью','-','BACK_THIS', 'BACK'),
                       'QUIZ': ('quiz', 'Квиз','-','BACK'),
                       'TRANSLATION': ('translate', 'Переводчик','-','BACK'),
                       'VOICE_CHAT': ('voice', 'Голосовое общение','-','BACK'),
@@ -15,7 +15,7 @@ command_description= {'START': ('start','Нажмите для запуска б
                       'IMAGE': ('image', 'Распознавание изображений','-','BACK'),
                       'SUMMARY': ('summary', 'Помощь с резюме','-','BACK')}
 # кнопки описание
-text_descriptions = {'FACT_NEW':('Хочу ещё факт',), 'BACK': ('Закончить',)}
+text_descriptions = {'FACT_NEW':('Хочу ещё факт',), 'BACK_THIS': ('К списку звезд',), 'BACK': ('Закончить',)}
 
 # класс ресурс
 class Resource:
@@ -61,7 +61,7 @@ class ResHolder:
         return names_lst
 
     # по имени отдай ресурс звезды
-    async def get_celebrity_resource(self, _name):
+    def get_celebrity_resource(self, _name):
         for item in self.resource_list:
             if isinstance(item, CelebrityResource):
                 if item.celebrity_name == _name:

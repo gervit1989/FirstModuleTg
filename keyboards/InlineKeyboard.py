@@ -1,6 +1,8 @@
 from Descriptions import *
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from keyboards.callback_data import CelebrityData
+
 # клавиатура звезд
 def ikb_celebrity():
     keyboard = InlineKeyboardBuilder()
@@ -10,8 +12,12 @@ def ikb_celebrity():
     print(celebrities_list, len(celebrities_list))
 
     for cb_name in celebrities_list:
+        item = res_holder.get_celebrity_resource(cb_name)
         keyboard.button(text=cb_name,
-                        callback_data='0')
+                        callback_data=CelebrityData(
+                        button='cb',
+                        name=item.celebrity_name,
+                    ),)
 
     # выравниваем
     keyboard.adjust(*[1]*lst_length)

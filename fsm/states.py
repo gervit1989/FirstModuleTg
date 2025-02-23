@@ -7,3 +7,7 @@ class ChatStates(StatesGroup):
 # для чата с ИИ-звездой
 class ChatWithCelebrityStates(StatesGroup):
     wait_for_request = State()
+
+# для чата с конкретной ИИ-звездой
+class CurrentChatWithCelebrityStates(StatesGroup):
+    wait_for_answer = State()
