@@ -86,6 +86,7 @@ async def celebrity_answer(message: Message, state: FSMContext):
 
 @ai_handler.message(QuizGame.wait_for_answer)
 async def quiz_answer(message: Message, state: FSMContext):
+    is_inline_keyboard = True
     await message.bot.send_chat_action(
         chat_id=message.from_user.id,
         action=ChatAction.TYPING,
@@ -95,7 +96,7 @@ async def quiz_answer(message: Message, state: FSMContext):
     item = await res_holder.get_resource(data['name'])
 
     photo_file = item.photo if item is not None else None
-    if user_answer == text_descriptions['NEXT_BY_THEME'][0]:
+    if user_answer == text_descriptions['NEXT_BY_THEME'][0] and not is_inline_keyboard:
         request_message = [
             {
                 'role': 'user',
@@ -120,7 +121,7 @@ async def quiz_answer(message: Message, state: FSMContext):
             reply_markup=keyboard_by_arg('QUIZ', True, True, 1),
         )
         return
-    if user_answer== text_descriptions['SCORE_NULL'][0]:
+    if user_answer== text_descriptions['SCORE_NULL'][0] and not is_inline_keyboard:
         data['score'] = data.get('score', 0)
         if data['score'] > 0:
             data['score'] = 0
@@ -158,17 +159,17 @@ async def quiz_answer(message: Message, state: FSMContext):
     data['dialog'].append(quiz_response_dict)
     is_show = True
     stage_id = 1
-    if message.text == text_descriptions['CH_THEME'][0]:
+    if message.text == text_descriptions['CH_THEME'][0] and not is_inline_keyboard:
         stage_id = 0
     await state.update_data(dialog=data['dialog'])
     await message.answer_photo(
         photo=photo_file,
-        caption=quiz_response,
-        reply_markup=keyboard_by_arg('TALK', False, is_show, stage_id),
+        caption=quiz_response + f'\nВаш текущий счет: {data['score']}',
+        reply_markup=keyboard_by_arg('QUIZ', is_inline_keyboard, is_show, stage_id),
     )
-    if user_answer == text_descriptions['BACK'][0]:
+    if user_answer == text_descriptions['BACK'][0] and not is_inline_keyboard:
         await state.clear()
         await command_start(message)
-    if user_answer == text_descriptions['CH_THEME'][0]:
+    if user_answer == text_descriptions['CH_THEME'][0] and not is_inline_keyboard:
         await base_command(message, command_description['QUIZ'][0], 'QUIZ', None, False, True)
         await state.set_state(ChatWithCelebrityStates.wait_for_request)

@@ -54,8 +54,8 @@ def ikb_quiz(stage_id:int=0):
                             if key2 is value[i]:
                                 keyboard.button(text=value2[0],
                                                 callback_data=QuizData(
-                                                    button=key2,
-                                                    name=value2[0],
+                                                    button='qd2',
+                                                    name=key2,
                                                 ), )
                                 btn_count += 1
 

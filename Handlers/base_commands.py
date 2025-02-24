@@ -60,7 +60,7 @@ async def base_request(message: Message, request_message: list, cmd_description:
 
 # базовая команда ИИ
 async def base_command(message: Message, cmd_description: str, arg_of_keyboard: str, request: str = None,
-                       get_from_ai: bool = True, inline_kb=False):
+                       get_from_ai: bool = True, inline_kb=False, old_inline_kb = False):
     await message.bot.send_chat_action(
         chat_id=message.from_user.id,
         action=ChatAction.TYPING,
@@ -95,7 +95,7 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
     else:
         caption = req_msg
     print(arg_of_keyboard)
-    if inline_kb:
+    if inline_kb and not old_inline_kb:
         unneed_msg = await message.answer(
             text=f'Привет,{message.from_user.full_name}',
             reply_markup=keyboard_by_arg(arg_of_keyboard, inline_kb, False),
