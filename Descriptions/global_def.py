@@ -1,5 +1,6 @@
 import os
 from aiogram.types import FSInputFile
+import enum
 
 # описание команд и допов
 command_description = {'START': ('start', 'Нажмите для запуска бота'),
@@ -7,7 +8,7 @@ command_description = {'START': ('start', 'Нажмите для запуска 
                        'FACT': ('random', 'Рандомный факт', '-', 'FACT_NEW', 'BACK'),
                        'AICHAT': ('gpt', 'ChatGPT интерфейс', '-', 'BACK'),
                        'TALK': ('talk', 'Диалог с известной личностью', '-', 'BACK_CB_LST', 'BACK'),
-                       'QUIZ': ('quiz', 'Квиз', '-', 'BACK'),
+                       'QUIZ': ('quiz', 'Квиз', '-', 'NEXT_BY_THEME','CH_THEME', 'BACK'),
                        'TRANSLATION': ('translate', 'Переводчик', '-', 'BACK'),
                        'VOICE_CHAT': ('voice', 'Голосовое общение', '-', 'BACK'),
                        'RECOMMEND': ('recommend', 'Рекомендации по фильмам и книгам', '-', 'BACK'),
@@ -15,7 +16,7 @@ command_description = {'START': ('start', 'Нажмите для запуска 
                        'IMAGE': ('image', 'Распознавание изображений', '-', 'BACK'),
                        'SUMMARY': ('summary', 'Помощь с резюме', '-', 'BACK')}
 # кнопки описание
-text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'BACK_CB_LST': ('К списку звезд',), 'BACK': ('Закончить',)}
+text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'NEXT_BY_THEME': ('Хочу ещё вопрос по теме',), 'BACK_CB_LST': ('К списку звезд',), 'CH_THEME': ('К списку тем',), 'BACK': ('Закончить',)}
 
 
 # класс ресурс
@@ -32,6 +33,15 @@ class Resource:
         self.msg = msg_
         self.name_of_res = name
 
+# для ресурса квиз
+class QuizResource(Resource):
+    theme_name = None
+    theme_ru_name = None
+
+    def __init__(self, name_of_res, name, ru_name, photo_, prompt_=None, msg_=None):
+        super().__init__(name_of_res, photo_, prompt_, msg_)
+        self.theme_name = name
+        self.theme_ru_name = ru_name
 
 # ресурс знаменитости
 class CelebrityResource(Resource):
@@ -41,6 +51,11 @@ class CelebrityResource(Resource):
         super().__init__(name_of_res, photo_, prompt_, msg_)
         self.celebrity_name = name
 
+# позиция в промпте при разборе
+class PromptInPosition(enum.Enum):
+    after = 3
+    middle = 2
+    before = 1
 
 # хранилище ресурсов
 class ResHolder:
@@ -55,6 +70,29 @@ class ResHolder:
         for item in self.resource_list:
             if item.name_of_res == _name:
                 return item
+        return None
+
+    # список тем quiz
+    def get_quiz_names(self, ):
+        themes = []
+        for item in self.resource_list:
+            if isinstance(item, QuizResource):
+                themes.append(item.theme_ru_name)
+        return themes
+
+    # по имени отдай ресурс темы
+    def get_quiz_theme_resource_ru(self, _name):
+        for item in self.resource_list:
+            if isinstance(item, QuizResource):
+                if item.theme_ru_name == _name:
+                    return item
+        return None
+
+    def get_quiz_theme_resource(self, _name):
+        for item in self.resource_list:
+            if isinstance(item, QuizResource):
+                if item.theme_name == _name:
+                    return item
         return None
 
     # список имен звезд
@@ -128,9 +166,46 @@ class ResHolder:
                             # print(prompt)
                             msg = in_data if msg_key == key2 else msg
                         break
-            celebrity_start_str = command_description['TALK'][0].lower() + '_'
+            #print(file_without_ext, prompt, msg)
+            celebrity_start_str = command_description['TALK'][0] + '_'
             if file_name.startswith(celebrity_start_str):
                 name_right = prompt.split(',')[0][5:]
                 self.resource_list.append(CelebrityResource(file_without_ext, name_right, photo, prompt, msg))
+            elif file_without_ext == command_description['QUIZ'][0]:
+                th_lst = prompt.split('\n')
+                prompt_before = []
+                prompt_after = []
+                themes_lst =[]
+                theme_prompt_lst =[]
+                ru_themes_lst =[]
+                pos = PromptInPosition.before
+                for row in th_lst:
+                    if row.startswith('Если я напишу \''):
+                        if pos == PromptInPosition.before:
+                            pos = PromptInPosition.middle
+                        pos_of_quote = row.find('\'')
+                        pos_of_quote2 = row.find('\'', pos_of_quote+1)
+                        theme = row[pos_of_quote+1:pos_of_quote2]
+                        if theme =='quiz_more':
+                            continue
+                        themes_lst.append(theme)
+                        part_of_prompt = row[pos_of_quote2+2:].strip()
+                        #print(part_of_prompt)
+                        theme_prompt_lst.append(part_of_prompt)
+                        parts = part_of_prompt.split('тему')
+                        #print(*parts, sep='\n')
+                        ru_themes_lst.append('тема '+parts[1].strip().split('-')[0])
+                    elif pos == PromptInPosition.middle:
+                        pos = PromptInPosition.after
+                        prompt_after.append(row)
+                    elif pos == PromptInPosition.after:
+                        prompt_after.append(row)
+                    elif pos == PromptInPosition.before:
+                        prompt_before.append(row)
+                part_before = '\n'.join(prompt_before)
+                part_after = '\n'.join(prompt_after)
+                for theme_pos in range(len(themes_lst)):
+                    new_prompt = part_before+'\n'+ theme_prompt_lst[theme_pos] + '\n' + part_after
+                    self.resource_list.append(QuizResource(file_without_ext, themes_lst[theme_pos], ru_themes_lst[theme_pos], photo, new_prompt, msg))
             else:
                 self.resource_list.append(Resource(file_without_ext, photo, prompt, msg))

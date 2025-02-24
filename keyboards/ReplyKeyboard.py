@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from Descriptions import *
+from . import ikb_quiz
 from .InlineKeyboard import ikb_celebrity
 
 
@@ -31,6 +32,8 @@ def keyboard_btn_by_arg(arg: str):
 def keyboard_by_arg(arg: str, inline_kb: bool = False, is_show=True):
     if arg == 'TALK' and inline_kb and is_show:
         return ikb_celebrity()
+    elif arg == 'QUIZ' and inline_kb and is_show:
+        return ikb_quiz()
     keyboard = ReplyKeyboardBuilder()
     print('z')
     if is_show:

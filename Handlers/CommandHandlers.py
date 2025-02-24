@@ -39,6 +39,17 @@ async def command_gpt(message: Message, state: FSMContext):
     await state.set_state(ChatWithCelebrityStates.wait_for_request)
 
 
+# - /quiz
+@command_router.message(Command(command_description['QUIZ'][0]))
+@command_router.message(F.text == command_description['QUIZ'][1])
+async def command_quiz(message: Message, state: FSMContext):
+    # поздороваться
+    await base_command(message, command_description['QUIZ'][0], 'QUIZ', None, False, True)
+
+    # сохраняем положение
+    await state.set_state(ChatWithCelebrityStates.wait_for_request)
+
+
 @command_router.message(Command(command_description['TRANSLATION'][0]))
 @command_router.message(F.text == command_description['TRANSLATION'][1])
 async def command_help(message: Message):
@@ -86,9 +97,13 @@ async def command_help(message: Message):
         text=f'Здесь будет реализован механизм помощи с резюме!'
     )
 
-
 @command_router.message(Command(command_description['HELP'][0]))
+@command_router.message(F.text == command_description['HELP'][1])
 async def command_help(message: Message):
+    text_msg = f'Помощь,{message.from_user.full_name}!'
+    item = await res_holder.get_resource('main')
+    if item is not None:
+        text_msg = item.msg
     await message.answer(
-        text=f'Помощь,{message.from_user.full_name}!'
+        text=text_msg
     )
