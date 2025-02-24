@@ -121,7 +121,7 @@ async def quiz_answer(message: Message, state: FSMContext):
             reply_markup=keyboard_by_arg('QUIZ', True, True, 1),
         )
         return
-    if user_answer== text_descriptions['SCORE_NULL'][0] and not is_inline_keyboard:
+    if user_answer == text_descriptions['SCORE_NULL'][0] and not is_inline_keyboard:
         data['score'] = data.get('score', 0)
         if data['score'] > 0:
             data['score'] = 0
@@ -130,7 +130,7 @@ async def quiz_answer(message: Message, state: FSMContext):
         text_msg = f'Счет обнулен для {message.from_user.full_name}!'
         await message.answer(
             text=text_msg,
-            reply_markup = types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()
         )
         return
 

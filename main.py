@@ -53,7 +53,6 @@ async def set_commands(bot: Bot):
 if __name__ == '__main__':
     try:
         # запуск бота
-        #varx = 2
         asyncio.run(start_bot())
     # пропускаем перезапуск бота - не ошибка
     except KeyboardInterrupt:

@@ -29,7 +29,7 @@ def keyboard_btn_by_arg(arg: str):
     return keyboard.as_markup(resize_keyboard=True, )
 
 
-def keyboard_by_arg(arg: str, inline_kb: bool = False, is_show=True, stage_id:int = 0):
+def keyboard_by_arg(arg: str, inline_kb: bool = False, is_show=True, stage_id: int = 0):
     if arg == 'TALK' and inline_kb and is_show:
         return ikb_celebrity()
     elif arg == 'QUIZ' and inline_kb and is_show:

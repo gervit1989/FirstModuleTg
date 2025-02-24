@@ -7,8 +7,7 @@ from Descriptions import res_holder, command_description
 from .CommandHandlers import command_start
 from .base_commands import base_request, base_command
 from fsm.states import CurrentChatWithCelebrityStates, QuizGame
-from keyboards import keyboard_by_arg
-from keyboards.callback_data import CelebrityData, QuizData
+from keyboards import keyboard_by_arg, CelebrityData, QuizData
 
 callback_router = Router()
 
@@ -28,6 +27,7 @@ async def select_celebrity(callback: CallbackQuery, callback_data: CelebrityData
         reply_markup=keyboard_by_arg('TALK'),
     )
 
+
 async def create_quiz_question(callback: CallbackQuery, callback_data: QuizData, state: FSMContext):
     data = await state.get_data()
     data['score'] = data.get('score', 0)
@@ -44,7 +44,6 @@ async def create_quiz_question(callback: CallbackQuery, callback_data: QuizData,
         cb_res = res_holder.get_quiz_theme_resource(name_of_theme)
         if cb_res is not None:
             photo_file = cb_res.photo
-
 
     data['name'] = name_of_theme
     await state.update_data(data)
@@ -71,6 +70,7 @@ async def create_quiz_question(callback: CallbackQuery, callback_data: QuizData,
         reply_markup=keyboard_by_arg('QUIZ', True, True, 1),
     )
 
+
 @callback_router.callback_query(QuizData.filter(F.button == 'qd'))
 async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: FSMContext):
     await create_quiz_question(callback, callback_data, state)
@@ -79,7 +79,7 @@ async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: 
 @callback_router.callback_query(QuizData.filter(F.button == 'qd2'))
 async def select_btn(callback: CallbackQuery, callback_data: QuizData, state: FSMContext):
     data = await state.get_data()
-    if callback_data.name== 'SCORE_NULL':
+    if callback_data.name == 'SCORE_NULL':
         data['score'] = data.get('score', 0)
         if data['score'] > 0:
             data['score'] = 0
@@ -88,12 +88,12 @@ async def select_btn(callback: CallbackQuery, callback_data: QuizData, state: FS
         text_msg = f'Счет обнулен для {callback.from_user.full_name}!'
         await callback.message.answer(
             text=text_msg,
-            reply_markup = types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()
         )
     elif callback_data.name == 'NEXT_BY_THEME':
         await create_quiz_question(callback, callback_data, state)
     elif callback_data.name == 'CH_THEME':
-        await base_command( callback.message, command_description['QUIZ'][0], 'QUIZ', None, False, True, True)
+        await base_command(callback.message, command_description['QUIZ'][0], 'QUIZ', None, False, True, True)
         await state.set_state(QuizGame.wait_for_request)
     elif callback_data.name == 'BACK':
         await state.clear()

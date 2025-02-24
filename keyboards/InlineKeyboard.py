@@ -1,7 +1,7 @@
 from Descriptions import *
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from keyboards.callback_data import CelebrityData, QuizData
+from keyboards import CelebrityData, QuizData
 
 
 # клавиатура звезд
@@ -25,11 +25,12 @@ def ikb_celebrity():
     # строим
     return keyboard.as_markup()
 
+
 # клавиатура квиза
-def ikb_quiz(stage_id:int=0):
+def ikb_quiz(stage_id: int = 0):
     keyboard = InlineKeyboardBuilder()
     btn_count = 0
-    if stage_id==0:
+    if stage_id == 0:
         # достаем темы из хранилища
         themes = res_holder.get_quiz_names()
         lst_length = int(len(themes))
@@ -37,13 +38,13 @@ def ikb_quiz(stage_id:int=0):
 
         for ru_theme_name in themes:
             item = res_holder.get_quiz_theme_resource_ru(ru_theme_name)
-            #print(item)
+            # print(item)
             keyboard.button(text=ru_theme_name,
                             callback_data=QuizData(
                                 button='qd',
                                 name=item.theme_name,
                             ), )
-        btn_count=lst_length
+        btn_count = lst_length
     else:
         btn_count = 0
         for key, value in command_description.items():

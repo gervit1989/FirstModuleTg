@@ -71,8 +71,8 @@ class AI:
     async def text_request(self, messages: list[dict[str, str]], prompt: str):
         message_list = list()
         message_list.append(
-                           {'role': 'system',
-                            'content': await self._read_prompt(prompt)},
+            {'role': 'system',
+             'content': await self._read_prompt(prompt)},
         )
         for msg in messages:
             message_list.append(msg)

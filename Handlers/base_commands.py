@@ -60,7 +60,7 @@ async def base_request(message: Message, request_message: list, cmd_description:
 
 # базовая команда ИИ
 async def base_command(message: Message, cmd_description: str, arg_of_keyboard: str, request: str = None,
-                       get_from_ai: bool = True, inline_kb=False, old_inline_kb = False):
+                       get_from_ai: bool = True, inline_kb=False, old_inline_kb=False):
     await message.bot.send_chat_action(
         chat_id=message.from_user.id,
         action=ChatAction.TYPING,
