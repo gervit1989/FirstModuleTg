@@ -16,7 +16,7 @@ command_description = {'START': ('start', 'Нажмите для запуска 
                        'IMAGE': ('image', 'Распознавание изображений', '-', 'BACK'),
                        'SUMMARY': ('summary', 'Помощь с резюме', '-', 'BACK')}
 # кнопки описание
-text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'NEXT_BY_THEME': ('Хочу ещё вопрос по теме',), 'BACK_CB_LST': ('К списку звезд',), 'CH_THEME': ('К списку тем',), 'SCORE_NULL':('Обнулить счет и диалог'), 'BACK': ('Закончить',)}
+text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'NEXT_BY_THEME': ('Хочу ещё вопрос по теме',), 'BACK_CB_LST': ('К списку звезд',), 'CH_THEME': ('К списку тем',), 'SCORE_NULL':('Обнулить счет и диалог',), 'BACK': ('Закончить',)}
 
 
 # класс ресурс

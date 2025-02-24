@@ -27,7 +27,7 @@ async def select_celebrity(callback: CallbackQuery, callback_data: CelebrityData
         reply_markup=keyboard_by_arg('TALK'),
     )
 
-@callback_router.callback_query(CelebrityData.filter(F.button == 'qd'))
+@callback_router.callback_query(QuizData.filter(F.button == 'qd'))
 async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: FSMContext):
     data = await state.get_data()
     data['score'] = data.get('score', 0)
@@ -50,9 +50,9 @@ async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: 
         chat_id=callback.from_user.id,
         action=ChatAction.TYPING,
     )
-    ai_question = await base_request(request_message, callback_data.name)
+    ai_question = await base_request(callback, request_message, callback_data.name)
     if data['score'] == 0:
-        ai_question = f'И мы начинаем наш квииииз с {callback.from_user.id}\nПервый вопрос:\n{ai_question}'
+        ai_question = f'И мы начинаем наш квииииз с {callback.from_user.full_name}\nПервый вопрос:\n{ai_question}'
     await callback.bot.send_photo(
         chat_id=callback.from_user.id,
         photo=photo_file,
