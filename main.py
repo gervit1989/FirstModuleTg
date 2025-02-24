@@ -1,7 +1,7 @@
 import asyncio  # асинхронка
-import os       # файловая система
+import os  # файловая система
 
-from aiogram import Bot, Dispatcher     # работа с тг
+from aiogram import Bot, Dispatcher  # работа с тг
 from aiogram.exceptions import TelegramBadRequest, TelegramNetworkError
 from aiogram.types import BotCommand, BotCommandScopeDefault  # команды меню
 
@@ -9,13 +9,16 @@ from Handlers import all_handlers_router
 from Descriptions import *
 from AI import *
 
+
 # старт
 def on_start():
     print("Bot is started...")
 
+
 # завершение
 def on_shutdown():
     print("Bot is turned down...")
+
 
 # функция старта бота
 async def start_bot():
@@ -29,9 +32,10 @@ async def start_bot():
     await set_commands(bot)
     await dp.start_polling(bot)
 
+
 # установка команд
 async def set_commands(bot: Bot):
-    commands=[]
+    commands = []
     print('setting commands')
     for item, value in command_description.items():
         commands.append(BotCommand(command=value[0], description=value[1]))
@@ -44,8 +48,9 @@ async def set_commands(bot: Bot):
         print('I can not change photo yet')
     await bot.set_my_commands(commands, BotCommandScopeDefault())
 
+
 # запуск тг бота
-if __name__ =='__main__':
+if __name__ == '__main__':
     try:
         # запуск бота
         asyncio.run(start_bot())

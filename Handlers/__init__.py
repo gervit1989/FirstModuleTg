@@ -9,8 +9,8 @@ all_handlers_router = Router()
 
 # собираем все блоки в рамках package
 all_handlers_router.include_routers(
-    command_router, # команды
-    keyboard_router,        # клавиатура
+    command_router,  # команды
+    keyboard_router,  # клавиатура
     callback_router,
     ai_handler,
 )
