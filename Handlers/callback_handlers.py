@@ -53,6 +53,8 @@ async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: 
     ai_question = await base_request(callback, request_message, callback_data.name)
     if data['score'] == 0:
         ai_question = f'И мы начинаем наш квииииз с {callback.from_user.full_name}\nПервый вопрос:\n{ai_question}'
+    data['question'] = ai_question
+    await state.update_data(data)
     await callback.bot.send_photo(
         chat_id=callback.from_user.id,
         photo=photo_file,

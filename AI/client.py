@@ -68,10 +68,18 @@ class AI:
 
     # текстовый запрос
     async def text_request(self, messages: list[dict[str, str]], prompt: str):
-        message_list = [
+        message_list = list()
+        print('showing')
+        message_list.append(
                            {'role': 'system',
                             'content': await self._read_prompt(prompt)},
-                       ] + messages
+        )
+        #print(messages[0])
+        for msg in messages:
+            #print(msg)
+            message_list.append(msg)
+        #print('1')
+        print(*message_list)
         completion = await self._client.chat.completions.create(
             messages=message_list,
             model=self._model_of_ai,

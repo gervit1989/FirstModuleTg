@@ -80,21 +80,46 @@ async def celebrity_answer(message: Message, state: FSMContext):
         await state.clear()
         await command_start(message)
     if message.text == text_descriptions['BACK_CB_LST'][0]:
-        await state.clear()
         await base_command(message, command_description['TALK'][0], 'TALK', None, False, True)
         await state.set_state(ChatWithCelebrityStates.wait_for_request)
 
 
 @ai_handler.message(QuizGame.wait_for_answer)
-async def celebrity_answer(message: Message, state: FSMContext):
-
+async def quiz_answer(message: Message, state: FSMContext):
     await message.bot.send_chat_action(
         chat_id=message.from_user.id,
         action=ChatAction.TYPING,
     )
     data = await state.get_data()
     user_answer = message.text
+    item = await res_holder.get_resource(data['name'])
 
+    photo_file = item.photo if item is not None else None
+    if user_answer == text_descriptions['NEXT_BY_THEME'][0]:
+        request_message = [
+            {
+                'role': 'user',
+                'content': data['name'],
+            }
+        ]
+        await message.bot.send_chat_action(
+            chat_id=message.from_user.id,
+            action=ChatAction.TYPING,
+        )
+        ai_question = await base_request(message, request_message, data['name'])
+        if data['score'] == 0:
+            ai_question = f'И мы начинаем наш квииииз с {message.from_user.full_name}\nПервый вопрос:\n{ai_question}'
+        else:
+            ai_question = f'Ваш счет {data['score']}\n{ai_question}'
+        data['question'] = ai_question
+        await state.update_data(data)
+        await message.bot.send_photo(
+            chat_id=message.from_user.id,
+            photo=photo_file,
+            caption=ai_question,
+            reply_markup=keyboard_by_arg('QUIZ', True, True, 1),
+        )
+        return
     if user_answer== text_descriptions['SCORE_NULL'][0]:
         data['score'] = data.get('score', 0)
         if data['score'] > 0:
@@ -109,21 +134,19 @@ async def celebrity_answer(message: Message, state: FSMContext):
         return
 
     user_text = 'Пока, всего тебе хорошего!' if user_answer == text_descriptions['BACK'][0] else message.text
-    user_request = [
+    quiz_question = data['question']
+    user_request = list()
+    user_request.append(
         {'role': 'assistant',
-         'content': data['question']},
+         'content': quiz_question})
+    user_request.append(
         {'role': 'user',
-         'content': user_answer}
-    ]
+         'content': user_answer})
     data['dialog'].append(user_request)
-    item = res_holder.get_quiz_theme_resource(data['name'])
-    photo_file = None
     cmd_description = None
     if item is not None:
-        photo_file = item.photo
         cmd_description = item.theme_name
-
-    quiz_response = await base_request(message, data['dialog'], cmd_description)
+    quiz_response = await base_request(message, user_request, cmd_description)
     correct_answer = quiz_response.split(' ', 1)[0]
     if correct_answer == 'Правильно!':
         data['score'] += 1
@@ -143,10 +166,9 @@ async def celebrity_answer(message: Message, state: FSMContext):
         caption=quiz_response,
         reply_markup=keyboard_by_arg('TALK', False, is_show, stage_id),
     )
-    if message.text == text_descriptions['BACK'][0]:
+    if user_answer == text_descriptions['BACK'][0]:
         await state.clear()
         await command_start(message)
-    if message.text == text_descriptions['CH_THEME'][0]:
-        await state.clear()
+    if user_answer == text_descriptions['CH_THEME'][0]:
         await base_command(message, command_description['QUIZ'][0], 'QUIZ', None, False, True)
         await state.set_state(ChatWithCelebrityStates.wait_for_request)

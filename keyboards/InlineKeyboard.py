@@ -37,7 +37,7 @@ def ikb_quiz(stage_id:int=0):
 
         for ru_theme_name in themes:
             item = res_holder.get_quiz_theme_resource_ru(ru_theme_name)
-            print(item)
+            #print(item)
             keyboard.button(text=ru_theme_name,
                             callback_data=QuizData(
                                 button='qd',
