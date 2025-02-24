@@ -91,7 +91,7 @@ async def base_command(message: Message, cmd_description: str, arg_of_keyboard: 
                 'content': req_msg,
             }
         ]
-        caption = base_request(message, request_message, cmd_description)
+        caption = await base_request(message, request_message, cmd_description)
     else:
         caption = req_msg
     print(arg_of_keyboard)
