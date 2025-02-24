@@ -8,7 +8,7 @@ command_description = {'START': ('start', 'Нажмите для запуска 
                        'FACT': ('random', 'Рандомный факт', '-', 'FACT_NEW', 'BACK'),
                        'AICHAT': ('gpt', 'ChatGPT интерфейс', '-', 'BACK'),
                        'TALK': ('talk', 'Диалог с известной личностью', '-', 'BACK_CB_LST', 'BACK'),
-                       'QUIZ': ('quiz', 'Квиз', '-', 'NEXT_BY_THEME','CH_THEME', 'BACK'),
+                       'QUIZ': ('quiz', 'Квиз', '-', 'NEXT_BY_THEME','CH_THEME','SCORE_NULL', 'BACK'),
                        'TRANSLATION': ('translate', 'Переводчик', '-', 'BACK'),
                        'VOICE_CHAT': ('voice', 'Голосовое общение', '-', 'BACK'),
                        'RECOMMEND': ('recommend', 'Рекомендации по фильмам и книгам', '-', 'BACK'),
@@ -16,7 +16,7 @@ command_description = {'START': ('start', 'Нажмите для запуска 
                        'IMAGE': ('image', 'Распознавание изображений', '-', 'BACK'),
                        'SUMMARY': ('summary', 'Помощь с резюме', '-', 'BACK')}
 # кнопки описание
-text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'NEXT_BY_THEME': ('Хочу ещё вопрос по теме',), 'BACK_CB_LST': ('К списку звезд',), 'CH_THEME': ('К списку тем',), 'BACK': ('Закончить',)}
+text_descriptions = {'FACT_NEW': ('Хочу ещё факт',), 'NEXT_BY_THEME': ('Хочу ещё вопрос по теме',), 'BACK_CB_LST': ('К списку звезд',), 'CH_THEME': ('К списку тем',), 'SCORE_NULL':('Обнулить счет и диалог'), 'BACK': ('Закончить',)}
 
 
 # класс ресурс

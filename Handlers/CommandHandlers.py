@@ -3,9 +3,11 @@ from aiogram.types import Message
 from aiogram.filters import Command
 
 from Descriptions import *
+from fsm.states import QuizGame
 from keyboards import *
 from aiogram.fsm.context import FSMContext
 from fsm import *
+from keyboards.callback_data import QuizData
 from .base_commands import base_command, base_answer
 
 command_router = Router()
@@ -40,14 +42,32 @@ async def command_gpt(message: Message, state: FSMContext):
 
 
 # - /quiz
+@command_router.message(F.text == text_descriptions['SCORE_NULL'][1])
+async def command_quiz(message: Message, state: FSMContext):
+    data = await state.get_data()
+    data['score'] = data.get('score', 0)
+    data['dialog'] = []
+    await state.update_data(data)
+    text_msg = f'Счет обнулен для {message.from_user.full_name}!'
+    await message.answer(
+        text=text_msg
+    )
+
+
+# - /quiz
 @command_router.message(Command(command_description['QUIZ'][0]))
 @command_router.message(F.text == command_description['QUIZ'][1])
 async def command_quiz(message: Message, state: FSMContext):
     # поздороваться
     await base_command(message, command_description['QUIZ'][0], 'QUIZ', None, False, True)
 
+    data = await state.get_data()
+    data['score'] = data.get('score', 0)
+
+    await state.update_data(data)
+
     # сохраняем положение
-    await state.set_state(ChatWithCelebrityStates.wait_for_request)
+    await state.set_state(QuizGame.wait_for_request)
 
 
 @command_router.message(Command(command_description['TRANSLATION'][0]))
@@ -96,6 +116,7 @@ async def command_help(message: Message):
     await message.answer(
         text=f'Здесь будет реализован механизм помощи с резюме!'
     )
+
 
 @command_router.message(Command(command_description['HELP'][0]))
 @command_router.message(F.text == command_description['HELP'][1])

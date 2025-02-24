@@ -3,9 +3,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from Descriptions import res_holder
-from fsm.states import CurrentChatWithCelebrityStates
+from fsm.states import CurrentChatWithCelebrityStates, QuizGame
 from keyboards import keyboard_by_arg
-from keyboards.callback_data import CelebrityData
+from keyboards.callback_data import CelebrityData, QuizData
 
 callback_router = Router()
 
@@ -24,3 +24,19 @@ async def select_celebrity(callback: CallbackQuery, callback_data: CelebrityData
         caption=f'Начните диалог со звездой по имени {callback_data.name}',
         reply_markup=keyboard_by_arg('TALK'),
     )
+
+@callback_router.callback_query(CelebrityData.filter(F.button == 'qd'))
+async def select_theme(callback: CallbackQuery, callback_data: QuizData, state: FSMContext):
+    await state.set_state(QuizGame.wait_for_answer)
+    await state.update_data(name=callback_data.name, dialog=[])
+    cb_res = res_holder.get_celebrity_resource(callback_data.name)
+    photo_file = None
+    if cb_res is not None:
+        photo_file = cb_res.photo
+    await callback.bot.send_photo(
+        chat_id=callback.from_user.id,
+        photo=photo_file,
+        caption=f'Начните диалог со звездой по имени {callback_data.name}',
+        reply_markup=keyboard_by_arg('TALK'),
+    )
+

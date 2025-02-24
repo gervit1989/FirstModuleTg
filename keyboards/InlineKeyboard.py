@@ -25,7 +25,6 @@ def ikb_celebrity():
     # строим
     return keyboard.as_markup()
 
-
 # клавиатура квиза
 def ikb_quiz(stage_id:int=0):
     keyboard = InlineKeyboardBuilder()
