@@ -42,16 +42,9 @@ async def command_gpt(message: Message, state: FSMContext):
 
 
 # - /quiz
-@command_router.message(F.text == text_descriptions['SCORE_NULL'][1])
+@command_router.message(F.text == text_descriptions['SCORE_NULL'][0])
 async def command_quiz(message: Message, state: FSMContext):
     data = await state.get_data()
-    data['score'] = data.get('score', 0)
-    data['dialog'] = []
-    await state.update_data(data)
-    text_msg = f'Счет обнулен для {message.from_user.full_name}!'
-    await message.answer(
-        text=text_msg
-    )
 
 
 # - /quiz

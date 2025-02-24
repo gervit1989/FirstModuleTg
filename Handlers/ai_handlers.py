@@ -1,12 +1,13 @@
 import os
 
-from aiogram import Router, F
+from aiogram import Router, F, types
+from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.filters import Command
 
 from AI import ai_client
-from fsm.states import CurrentChatWithCelebrityStates
+from fsm.states import CurrentChatWithCelebrityStates, QuizGame
 from keyboards import keyboard_by_arg
 from Descriptions import text_descriptions, command_description, res_holder
 
@@ -41,6 +42,10 @@ async def ai_chat(message: Message, state: FSMContext):
 
 @ai_handler.message(CurrentChatWithCelebrityStates.wait_for_answer)
 async def celebrity_answer(message: Message, state: FSMContext):
+    await message.bot.send_chat_action(
+        chat_id=message.from_user.id,
+        action=ChatAction.TYPING,
+    )
     user_text = 'Пока, всего тебе хорошего!' if message.text == text_descriptions['BACK_CB_LST'][0] or message.text == \
                                                 text_descriptions['BACK'][0] else message.text
     data = await state.get_data()
@@ -77,4 +82,71 @@ async def celebrity_answer(message: Message, state: FSMContext):
     if message.text == text_descriptions['BACK_CB_LST'][0]:
         await state.clear()
         await base_command(message, command_description['TALK'][0], 'TALK', None, False, True)
+        await state.set_state(ChatWithCelebrityStates.wait_for_request)
+
+
+@ai_handler.message(QuizGame.wait_for_answer)
+async def celebrity_answer(message: Message, state: FSMContext):
+
+    await message.bot.send_chat_action(
+        chat_id=message.from_user.id,
+        action=ChatAction.TYPING,
+    )
+    data = await state.get_data()
+    user_answer = message.text
+
+    if user_answer== text_descriptions['SCORE_NULL'][0]:
+        data['score'] = data.get('score', 0)
+        if data['score'] > 0:
+            data['score'] = 0
+        data['dialog'] = []
+        await state.update_data(data)
+        text_msg = f'Счет обнулен для {message.from_user.full_name}!'
+        await message.answer(
+            text=text_msg,
+            reply_markup = types.ReplyKeyboardRemove()
+        )
+        return
+
+    user_text = 'Пока, всего тебе хорошего!' if user_answer == text_descriptions['BACK'][0] else message.text
+    user_request = [
+        {'role': 'assistant',
+         'content': data['question']},
+        {'role': 'user',
+         'content': user_answer}
+    ]
+    data['dialog'].append(user_request)
+    item = res_holder.get_quiz_theme_resource(data['name'])
+    photo_file = None
+    cmd_description = None
+    if item is not None:
+        photo_file = item.photo
+        cmd_description = item.theme_name
+
+    quiz_response = await base_request(message, data['dialog'], cmd_description)
+    correct_answer = quiz_response.split(' ', 1)[0]
+    if correct_answer == 'Правильно!':
+        data['score'] += 1
+        await state.update_data(score=data['score'])
+    quiz_response_dict = {
+        'role': 'assistant',
+        'content': quiz_response,
+    }
+    data['dialog'].append(quiz_response_dict)
+    is_show = True
+    stage_id = 1
+    if message.text == text_descriptions['CH_THEME'][0]:
+        stage_id = 0
+    await state.update_data(dialog=data['dialog'])
+    await message.answer_photo(
+        photo=photo_file,
+        caption=quiz_response,
+        reply_markup=keyboard_by_arg('TALK', False, is_show, stage_id),
+    )
+    if message.text == text_descriptions['BACK'][0]:
+        await state.clear()
+        await command_start(message)
+    if message.text == text_descriptions['CH_THEME'][0]:
+        await state.clear()
+        await base_command(message, command_description['QUIZ'][0], 'QUIZ', None, False, True)
         await state.set_state(ChatWithCelebrityStates.wait_for_request)

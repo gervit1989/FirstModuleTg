@@ -39,7 +39,7 @@ class QuizResource(Resource):
     theme_ru_name = None
 
     def __init__(self, name_of_res, name, ru_name, photo_, prompt_=None, msg_=None):
-        super().__init__(name_of_res, photo_, prompt_, msg_)
+        super().__init__(name, photo_, prompt_, msg_)
         self.theme_name = name
         self.theme_ru_name = ru_name
 
@@ -172,6 +172,7 @@ class ResHolder:
                 name_right = prompt.split(',')[0][5:]
                 self.resource_list.append(CelebrityResource(file_without_ext, name_right, photo, prompt, msg))
             elif file_without_ext == command_description['QUIZ'][0]:
+                self.resource_list.append(Resource(file_without_ext, photo, prompt, msg))
                 th_lst = prompt.split('\n')
                 prompt_before = []
                 prompt_after = []

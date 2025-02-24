@@ -19,4 +19,4 @@ class CurrentChatWithCelebrityStates(StatesGroup):
 # для квиза
 class QuizGame(StatesGroup):
     wait_for_answer = State()
-    quiz_next_step = State()
+    wait_for_request = State()
