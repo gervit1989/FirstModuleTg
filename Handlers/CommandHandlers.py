@@ -7,7 +7,6 @@ from fsm.states import QuizGame
 from keyboards import *
 from aiogram.fsm.context import FSMContext
 from fsm import *
-from keyboards.callback_data import QuizData
 from .base_commands import base_command, base_answer
 
 command_router = Router()

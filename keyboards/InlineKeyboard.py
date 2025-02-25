@@ -1,7 +1,7 @@
 from Descriptions import *
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from keyboards import CelebrityData, QuizData
+from .callback_data import CelebrityData, QuizData
 
 
 # клавиатура звезд
