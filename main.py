@@ -1,5 +1,4 @@
 import asyncio  # асинхронка
-import os  # файловая система
 
 from aiogram import Bot, Dispatcher  # работа с тг
 from aiogram.exceptions import TelegramBadRequest, TelegramNetworkError
@@ -8,6 +7,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault  # команды �
 from Handlers import all_handlers_router
 from Descriptions import *
 from AI import *
+from environment_holder import get_env_variable
 
 
 # старт
@@ -22,7 +22,7 @@ def on_shutdown():
 
 # функция старта бота
 async def start_bot():
-    bot = Bot(token=os.getenv('BOT_TOKEN'))
+    bot = Bot(token=get_env_variable('BOT_TOKEN'))
     dp = Dispatcher()
     dp.startup.register(on_start)
     dp.shutdown.register(on_shutdown)
@@ -43,7 +43,7 @@ async def set_commands(bot: Bot):
     item = await res_holder.get_resource('gpt')
     try:
         if item is not None:
-            await bot.set_chat_photo(photo=item.photo, chat_id=os.getenv('CHATID'))
+            await bot.set_chat_photo(photo=item.photo, chat_id=get_env_variable('CHATID'))
     except TelegramBadRequest:
         print('I can not change photo yet')
     await bot.set_my_commands(commands, BotCommandScopeDefault())

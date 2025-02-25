@@ -3,7 +3,7 @@ from aiogram.types import Message
 from openai import RateLimitError
 from AI import ai_client
 from Descriptions import res_holder
-import os
+from environment_holder import get_env_variable
 from keyboards import keyboard_by_arg, keyboard_start
 
 
@@ -27,9 +27,9 @@ async def base_answer(message: Message, name_of_res: str):
 async def base_request(message: Message, request_message: list, cmd_description: str):
     # список подключений
     ai_client_connect_data = list()
-    ai_client_connect_data.append((os.getenv('AI_TOKEN2'),))
-    ai_client_connect_data.append((os.getenv('AI_TOKEN3'), os.getenv('PROXY2'),))
-    ai_client_connect_data.append((os.getenv('AI_TOKEN'), os.getenv('PROXY'),))
+    ai_client_connect_data.append((get_env_variable('AI_TOKEN2'),))
+    ai_client_connect_data.append((get_env_variable('AI_TOKEN3'), get_env_variable('PROXY2'),))
+    ai_client_connect_data.append((get_env_variable('AI_TOKEN'), get_env_variable('PROXY'),))
 
     caption = None
 

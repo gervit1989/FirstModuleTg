@@ -1,11 +1,11 @@
-import os
+
 import httpx
 from openai import AsyncOpenAI
 
 from enum import Enum
 
 from Descriptions import res_holder
-
+from environment_holder import get_env_variable
 
 class Model(Enum):
     TEXT_AI = ''
@@ -24,16 +24,16 @@ class AI:
 
     # конструктор
     def __init__(self):
-        self._ai_token = os.getenv('AI_TOKEN')
-        self._proxy = os.getenv('PROXY')
-        self._model_of_ai = os.getenv('AI_MODEL')
+        self._ai_token = get_env_variable('AI_TOKEN')
+        self._proxy = get_env_variable('PROXY')
+        self._model_of_ai = get_env_variable('AI_MODEL')
         self._client = self._create_client()
 
     # создание клиента
     def _create_client(self):
         print('creating client')
         # если прокси от JR
-        if self._proxy == os.getenv('PROXY'):
+        if self._proxy == get_env_variable('PROXY'):
             ai_client = AsyncOpenAI(
                 api_key=self._ai_token,
                 http_client=httpx.AsyncClient(
